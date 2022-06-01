@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import viewsets, mixins
 
-from .models import User
+from users.models import User
 from .serializers import UserSerializer
 from .permissions import AdminOnly
 

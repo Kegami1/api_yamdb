@@ -11,7 +11,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 
-app_name = 'users'
+app_name = 'api_users'
 router = routers.DefaultRouter()
 router.register(
     r'users/(?P<username>\d+)/',
