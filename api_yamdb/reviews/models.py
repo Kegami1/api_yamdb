@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from users.models import User1
+from users.models import User
 # User = get_user_model()
 
 # class Category(models.Model)
@@ -28,7 +28,7 @@ class Review(models.Model):
         help_text='Оставьте свою рецензию',
     )
     author = models.ForeignKey(
-        User1,
+        User,
         verbose_name='Автор рецензии',
         help_text='Автор рецензии',
         on_delete=models.CASCADE,
@@ -52,8 +52,8 @@ class Review(models.Model):
         verbose_name = 'Рецензия'
         verbose_name_plural = 'Рецензии'
 
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.title
 
 
 class Comment(models.Model):
@@ -65,7 +65,7 @@ class Comment(models.Model):
     )
     text = models.TextField('Текст')
     author = models.ForeignKey(
-        User1,
+        User,
         verbose_name='Автор комментария',
         on_delete=models.CASCADE,
         related_name='comments'

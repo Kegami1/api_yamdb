@@ -19,12 +19,3 @@ class User(AbstractUser):
         default='USER',
     ) 
 
-class User1(AbstractUser):
-    user_role = models.CharField(
-        verbose_name='Пользовательская роль',
-        max_length=16,
-        choices=USERS_ROLE_CHOICES,
-        blank=False,
-        null=False,
-        default='USER',
-    ) 
