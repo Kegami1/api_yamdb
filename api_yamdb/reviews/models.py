@@ -3,8 +3,18 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-User = get_user_model()
+# User = get_user_model()
+from django.contrib.auth.models import AbstractUser
 
+class User(AbstractUser):
+    user_role = models.CharField(
+        verbose_name='Пользовательская роль',
+        max_length=16,
+        # choices=USERS_ROLE_CHOICES,
+        blank=False,
+        null=False,
+        default='USER',
+    ) 
 # class Category(models.Model)
 
 
