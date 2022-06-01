@@ -13,7 +13,8 @@ from rest_framework import viewsets, mixins
 
 from users.models import User
 from .serializers import UserSerializer
-from .permissions import AdminOnly
+from .permissions import AdminOnly, UserOwner
+from rest_framework.decorators import action
 
 class MyTokenObtainPairView(TokenObtainPairView):
 # class MyTokenObtainPairView(TokenObtainSlidingView):
@@ -25,48 +26,26 @@ class Signup():
     pass
 
 
-class DetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
-                        mixins.DestroyModelMixin, viewsets.GenericViewSet):
-    pass
-
 
 class UserApiViewSet(viewsets.ModelViewSet):
+# class UserApiViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (AdminOnly,)
+    # permission_classes = (AdminOnly,)
+    lookup_field = 'username'
 
 
-class UserDetail(APIView):
+    @action(methods=['get', 'patch'], detail=False, url_path='me')
+    def user_me(self, request):
+        user = get_object_or_404(User, username=self.request.user)
+        print(user)
+        serializer = self.get_serializer(user, many=False)
+        return Response(serializer.data) 
 
-    # queryset = User.objects.all()
-    # serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        username = self.kwargs.get('username')
-        user = get_object_or_404(User, username=username)
-        permission_classes = (AdminOnly,)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-
-
-class UserDetailViewSet(DetailViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (AdminOnly,)
-
-    # def get(self, request, *args, **kwargs):
-    #     username = self.kwargs.get('username')
-    #     user = get_object_or_404(User, username=username)
-    #     # permission_classes = (AdminOnly,)
-    #     serializer = UserSerializer(user)
-    #     return Response(serializer.data)
-
-    def get_queryset(self):
-        username = self.kwargs.get('username')
-        print(username, '!!!!!!!!!!!!!!!!!!!!!!!!')
-        user = get_object_or_404(User, username=username)
-        return user
+    # def get_permissions(self):
+    # # Если в GET-запросе требуется получить информацию об объекте
+    #     if self.user_me:
+    #     # Вернем обновленный перечень используемых пермишенов
+    #         return (UserOwner(),)
+    # # Для остальных ситуаций оставим текущий перечень пермишенов без изменений
+    #     return super().get_permissions() 

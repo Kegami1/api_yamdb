@@ -5,7 +5,7 @@ from reviews.models import Review, Comment
 class ReviewAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
-        'title',
+        # 'title',
         'text',
         'author',
         'score',
