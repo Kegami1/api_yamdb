@@ -5,16 +5,51 @@ from django.db import models
 
 from users.models import User
 
+
 class Category(models.Model):
-    pass
+    name = models.TextField(max_length=256)
+    slug = models.CharField(
+        max_length=50,
+        unique=True
+    )
+
+    def __str__(self):
+        return self.name
 
 
 class Genre(models.Model):
-    pass
+    name = models.CharField(max_length=200)
+    slug = models.CharField(
+        max_length=50,
+        unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Title(models.Model):
-    pass
+    name = models.CharField(max_length=200)
+    year = models.IntegerField
+    description = models.TextField(
+        blank=True,
+    )
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.SET_NULL,
+        related_name='genre_titles',
+        blank=True,
+        null=True
+    )
+    category = models.ForeignKey(
+        Genre,
+        on_delete=models.SET_NULL,
+        related_name='category_titles',
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.name
 
 
 class Review(models.Model):
