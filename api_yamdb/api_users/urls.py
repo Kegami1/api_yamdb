@@ -20,13 +20,13 @@ router.register(
 )
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # path('', include(router.urls)),
 
-    path('users/', UserList.as_view(), name='users'),
-    # path('users/<str:username>/', UserDetail.as_view(), name='users-detail'),
-    path('users/me/', UserApiViewSet, name='users-me'),
-    # path('auth/signup'), 
-    path('auth/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('users/', UserList.as_view(), name='users'),
+    # # path('users/<str:username>/', UserDetail.as_view(), name='users-detail'),
+    # path('users/me/', UserApiViewSet, name='users-me'),
+    # # path('auth/signup'), 
+    # path('auth/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
 
     # path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
