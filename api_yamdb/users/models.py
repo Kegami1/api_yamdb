@@ -10,12 +10,25 @@ USERS_ROLE_CHOICES = [
 ]
 
 class User(AbstractUser):
-    user_role = models.CharField(
+    first_name = models.CharField(
+        verbose_name='Имя',
+        max_length=150,
+        blank=True,
+        null=True
+    )
+    last_name = models.CharField(
+        verbose_name='Фамилия',
+        max_length=150,
+        blank=True,
+        null=True
+    )
+    role = models.CharField(
         verbose_name='Пользовательская роль',
         max_length=16,
         choices=USERS_ROLE_CHOICES,
         blank=False,
         null=False,
         default='USER',
-    ) 
+    )
+    bio = models.TextField(blank=True, null=True)
 
