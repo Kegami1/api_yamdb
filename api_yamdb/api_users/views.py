@@ -13,7 +13,10 @@ from rest_framework import viewsets, mixins
 
 from users.models import User
 from .serializers import UserSerializer
-from .permissions import AdminOnly
+from .permissions import AdminOnly, UserOwner
+from rest_framework.decorators import action
+from django.contrib.auth.hashers import make_password
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
 # class MyTokenObtainPairView(TokenObtainSlidingView):
@@ -25,48 +28,30 @@ class Signup():
     pass
 
 
-class DetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
-                        mixins.DestroyModelMixin, viewsets.GenericViewSet):
-    pass
-
 
 class UserApiViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
     permission_classes = (AdminOnly,)
+    lookup_field = 'username'
 
+    @action(methods=['get', 'patch'], detail=False, url_path='me')
+    def user_me(self, request):
+        user = get_object_or_404(User, username=self.request.user)
+        if self.request.method == 'PATCH':
+            serializer = self.get_serializer(user, data=self.request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        serializer = self.get_serializer(user, many=False)
+        return Response(serializer.data) 
 
-class UserDetail(APIView):
+    def get_permissions(self):
+        if self.request.path == '/api/v1/users/me/':
+            return (UserOwner(),)
+        return super().get_permissions() 
 
-    # queryset = User.objects.all()
-    # serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        username = self.kwargs.get('username')
-        user = get_object_or_404(User, username=username)
-        permission_classes = (AdminOnly,)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-
-
-class UserDetailViewSet(DetailViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (AdminOnly,)
-
-    # def get(self, request, *args, **kwargs):
-    #     username = self.kwargs.get('username')
-    #     user = get_object_or_404(User, username=username)
-    #     # permission_classes = (AdminOnly,)
-    #     serializer = UserSerializer(user)
-    #     return Response(serializer.data)
-
-    def get_queryset(self):
-        username = self.kwargs.get('username')
-        print(username, '!!!!!!!!!!!!!!!!!!!!!!!!')
-        user = get_object_or_404(User, username=username)
-        return user
+    # def validate_password(self, value: str) -> str:
+    #     password = make_password(value)
+    #     print(password)
+    #     return make_password(value)
