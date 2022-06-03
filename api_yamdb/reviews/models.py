@@ -1,5 +1,3 @@
-from django.contrib.auth import get_user_model
-from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -36,14 +34,14 @@ class Title(models.Model):
     genre = models.ForeignKey(
         Genre,
         on_delete=models.SET_NULL,
-        related_name='genre_titles',
+        related_name='title',
         blank=True,
         null=True
     )
     category = models.ForeignKey(
-        Genre,
+        Category,
         on_delete=models.SET_NULL,
-        related_name='category_titles',
+        related_name='title',
         blank=True,
         null=True
     )
