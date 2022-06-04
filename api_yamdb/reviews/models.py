@@ -52,7 +52,7 @@ class Title(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        'Title',
+        Title,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Рассматриваемое произведение',
@@ -78,12 +78,13 @@ class Review(models.Model):
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
+        db_index=True,
         verbose_name='Дата рецензии',
         help_text='Дата рецензии',
     )
 
     class Meta:
-        ordering = ('-pub_date',)
+        ordering = ('pub_date',)
         verbose_name = 'Рецензия'
         verbose_name_plural = 'Рецензии'
 
@@ -107,6 +108,7 @@ class Comment(models.Model):
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
+        db_index=True,
         verbose_name='Дата комментария',
         help_text='Дата комментария',
     )
