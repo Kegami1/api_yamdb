@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
-from rest_framework import permissions
+from rest_framework import generics, permissions
 
 from reviews.models import Review, Comment, Genre, Category, Title
 from api.serializers import ReviewSerializer, CommentSerializer, CategorySerializer, GenreSerializer
