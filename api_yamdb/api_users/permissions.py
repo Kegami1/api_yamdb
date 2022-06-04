@@ -7,18 +7,12 @@ class AdminOnly(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        return (
-            request.user.is_superuser or
-            request.user.role == 'ADMIN'
-        )
+        if request.user.is_authenticated:
+            return (request.user.is_superuser or request.user.role == 'admin')
 
     def has_object_permission(self, request, view, obj):
-        # if request.method in permissions.SAFE_METHODS:
-        #     return True
-        return (
-            request.user.is_superuser or
-            request.user.role == 'ADMIN'
-        )
+        if request.user.is_authenticated:
+            return (request.user.is_superuser or request.user.role == 'admin')
 
 
 class UserOwner(permissions.BasePermission):
@@ -26,15 +20,11 @@ class UserOwner(permissions.BasePermission):
     Разрешение пользователю работы со своим аккаунтом.
     """
 
-    # def has_permission(self, request, view):
-    #     return (
-    #         request.user.is_superuser or
-    #         request.user.user_role == 'ADMIN'
-    #     )
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
-        # if request.method in permissions.SAFE_METHODS:
-        #     return True
-        return (
-            obj.username == request.user
-        )
+        if request.user.is_authenticated:
+            return (
+                obj.username == request.user
+            )
