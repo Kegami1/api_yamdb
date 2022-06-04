@@ -6,4 +6,4 @@ from rest_framework.response import Response
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
-        return request.method in SAFE_METHODS
+        return (request.method in SAFE_METHODS or request.user.is_superuser)
