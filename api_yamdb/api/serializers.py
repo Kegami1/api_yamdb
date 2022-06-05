@@ -38,3 +38,9 @@ class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = ('name', 'slug')
+
+
+class TitleSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Title
+        fields = ('name', 'year', 'description', 'genre', 'category')
