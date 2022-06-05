@@ -216,7 +216,9 @@ PATCH: /api/v1/users/{username}/
 ### Авторы
 
 Белобородова Анастасия  beloborodova.anastasiia@yandex.ru
+
 Ватагин Алексей  summer-vatagin@yandex.ru
+
 Князев Сергей  Knyazevso@mail.ru
 
 
