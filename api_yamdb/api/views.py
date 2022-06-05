@@ -1,9 +1,12 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import generics, permissions, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, viewsets
 
 from reviews.models import Review, Comment, Genre, Category, Title
 from api.serializers import ReviewSerializer, CommentSerializer, CategorySerializer, GenreSerializer
 from api.mixins import ListDeleteViewSet
+from api.permissions import ReadOnly, MeAdmin
 from api.permissions import ReadOnly, AuthorAdminModerator
 
 
@@ -57,11 +60,20 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class CategoriesList(ListDeleteViewSet):
     queryset = Category.objects.all()
-    permission_classes = (permissions.IsAdminUser | ReadOnly,)
+    permission_classes = (MeAdmin | ReadOnly,)
     serializer_class = CategorySerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filterset_fields = ('name', 'slug')
+    search_fields = ('name',)
+    lookup_field = 'slug'
+
 
 
 class GenreList(ListDeleteViewSet):
     queryset = Genre.objects.all()
-    permission_classes = (permissions.IsAdminUser | ReadOnly,)
+    permission_classes = (MeAdmin | ReadOnly,)
     serializer_class = GenreSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filterset_fields = ('name', 'slug')
+    search_fields = ('name',)
+    lookup_field = 'slug'

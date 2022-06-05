@@ -9,6 +9,12 @@ class ReadOnly(BasePermission):
         return request.method in SAFE_METHODS
 
 
+class MeAdmin(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return (request.user.role == 'admin' or request.user.is_superuser)
+
+          
 class AuthorAdminModerator(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
@@ -27,3 +33,4 @@ class AuthorAdminModerator(BasePermission):
                 and request.user.is_moderator
         ):
             return True
+
