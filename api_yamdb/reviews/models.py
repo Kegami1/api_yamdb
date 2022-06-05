@@ -27,7 +27,7 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField(max_length=200)
-    year = models.IntegerField
+    year = models.IntegerField(blank=True, null=True)
     description = models.TextField(
         blank=True,
     )
@@ -74,7 +74,8 @@ class Review(models.Model):
         validators=(MinValueValidator(1),
                     MaxValueValidator(10)),
         blank=False,
-        null=False
+        null=False,
+        default='10',
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
@@ -104,7 +105,7 @@ class Comment(models.Model):
         User,
         verbose_name='Автор комментария',
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='comments',
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
