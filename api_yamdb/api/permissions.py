@@ -14,3 +14,23 @@ class MeAdmin(BasePermission):
         if request.user.is_authenticated:
             return (request.user.role == 'admin' or request.user.is_superuser)
 
+          
+class AuthorAdminModerator(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        elif obj.author == request.user:
+            return True
+        elif request.user.is_superuser:
+            return True
+        elif (
+                request.user.is_authenticated
+                and request.user.is_admin
+        ):
+            return True
+        elif (
+                request.user.is_authenticated
+                and request.user.is_moderator
+        ):
+            return True
+
