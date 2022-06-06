@@ -1,3 +1,4 @@
+from email.policy import default
 from rest_framework import serializers
 
 from users.models import User
@@ -17,7 +18,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    role = serializers.ReadOnlyField()
+    role = serializers.ReadOnlyField(default='user')
 
     class Meta:
         model = User

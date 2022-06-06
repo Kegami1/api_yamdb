@@ -25,7 +25,7 @@ def signup(request):
                 'me - запрещенный username',
                 status=status.HTTP_400_BAD_REQUEST
             )
-        serializer.save()
+        serializer.save(role='user')
         user = get_object_or_404(User, username=username)
         confirmation_code = default_token_generator.make_token(user)
         send_mail(
