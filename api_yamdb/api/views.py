@@ -1,11 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions, viewsets
+from rest_framework import generics, permissions, viewsets, pagination
+
 
 from reviews.models import Review, Comment, Genre, Category, Title
-from api.serializers import ReviewSerializer, CommentSerializer, CategorySerializer, GenreSerializer
-from api.mixins import ListDeleteViewSet
+from api.serializers import ReviewSerializer, CommentSerializer, CategorySerializer, GenreSerializer, TitleSerializer
+from api.mixins import ListDeleteViewSet, ListCreateDestroyUpdateViewset
 from api.permissions import ReadOnly, MeAdmin
 from api.permissions import ReadOnly, AuthorAdminModerator
 
@@ -58,7 +59,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
 
-class CategoriesList(ListDeleteViewSet):
+class CategoriesViewSet(ListDeleteViewSet):
     queryset = Category.objects.all()
     permission_classes = (MeAdmin | ReadOnly,)
     serializer_class = CategorySerializer
@@ -68,8 +69,7 @@ class CategoriesList(ListDeleteViewSet):
     lookup_field = 'slug'
 
 
-
-class GenreList(ListDeleteViewSet):
+class GenreViewSet(ListDeleteViewSet):
     queryset = Genre.objects.all()
     permission_classes = (MeAdmin | ReadOnly,)
     serializer_class = GenreSerializer
@@ -77,3 +77,13 @@ class GenreList(ListDeleteViewSet):
     filterset_fields = ('name', 'slug')
     search_fields = ('name',)
     lookup_field = 'slug'
+
+
+class TitleViewSet(ListCreateDestroyUpdateViewset):
+    queryset = Title.objects.all()
+    permission_classes = (MeAdmin | ReadOnly,)
+    serializer_class = TitleSerializer
+    lookup_field = 'id'
+    pagination_class = pagination.LimitOffsetPagination
+
+    
