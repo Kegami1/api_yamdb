@@ -1,19 +1,16 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions, viewsets
+from rest_framework import filters, permissions, viewsets
 
-from reviews.models import Review, Comment, Genre, Category, Title
-from api.serializers import ReviewSerializer, CommentSerializer, CategorySerializer, GenreSerializer, TitleSerializer, TitleGetSerializer
-from api.mixins import ListDeleteViewSet, ListCreateDestroyUpdateViewset
-from api.permissions import ReadOnly, MeAdmin
-from api.permissions import ReadOnly, AuthorAdminModerator
-
-from rest_framework.permissions import AllowAny
+from api.mixins import ListCreateDestroyUpdateViewset, ListDeleteViewSet
+from api.permissions import AuthorAdminModerator, MeAdmin
+from api.serializers import (CategorySerializer, CommentSerializer,
+                             GenreSerializer, ReviewSerializer,
+                             TitleGetSerializer, TitleSerializer)
+from reviews.models import Category, Genre, Review, Title
 
 
 class SlugFilterBackend(filters.BaseFilterBackend):
-  
     def filter_queryset(self, request, queryset, view):
         if request.query_params:
             if 'genre' in request.query_params.keys():
@@ -34,8 +31,10 @@ class SlugFilterBackend(filters.BaseFilterBackend):
                 return titles
         return Title.objects.all()
 
+
 class ReviewViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, AuthorAdminModerator)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          AuthorAdminModerator)
     serializer_class = ReviewSerializer
     # permission_classes = (AllowAny,)
 
@@ -59,7 +58,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, AuthorAdminModerator)    
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          AuthorAdminModerator)
     serializer_class = CommentSerializer
     # permission_classes = (AllowAny,)
 
@@ -114,15 +114,7 @@ class TitleViewSet(ListCreateDestroyUpdateViewset):
     search_fields = ('id',)
     lookup_field = 'id'
 
-
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return TitleGetSerializer
         return TitleSerializer
-
-    # def perform_create(self, serializer):
-    #     if (self.request.data.get('genre') in Genre.objects.all()) and (
-    #             self.request.data.get('category') in Category.objects.all()):
-    #         genre = get_object_or_404(Genre, slug=self.request.data.get('genre'))
-    #         category = get_object_or_404(Category, slug=self.request.data.get('category'))
-    #         serializer.save(genre=genre, category=category)

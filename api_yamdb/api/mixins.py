@@ -12,5 +12,6 @@ class ListCreateDestroyUpdateViewset(mixins.ListModelMixin,
                                      mixins.DestroyModelMixin,
                                      mixins.CreateModelMixin,
                                      mixins.UpdateModelMixin,
+                                     mixins.RetrieveModelMixin,
                                      viewsets.GenericViewSet):
     pass
