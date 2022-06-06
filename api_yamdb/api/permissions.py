@@ -1,6 +1,5 @@
-from rest_framework.permissions import (BasePermission,
-                                        IsAuthenticated,
-                                        SAFE_METHODS)
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAuthenticated)
 from rest_framework.response import Response
 
 

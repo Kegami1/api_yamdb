@@ -1,9 +1,10 @@
 from csv import DictReader
-from django.core.management import BaseCommand
 
-from reviews.models import Category, Genre, Genre_Title, Title, Review, Comment, User
+from django.core.management import BaseCommand
 from django.shortcuts import get_object_or_404
 
+from reviews.models import (Category, Comment, Genre, Genre_Title, Review,
+                            Title, User)
 
 ALREDY_LOADED_ERROR_MESSAGE = """
 If you need to reload the child data from the CSV file,
