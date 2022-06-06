@@ -1,7 +1,6 @@
 from django.db.models import Avg
 from os import set_inheritable
 from xml.dom import ValidationErr
-from attr import field
 from rest_framework import serializers
 
 from reviews.models import Review, Comment, Category, Title, Genre
@@ -54,15 +53,15 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = ('name', 'slug')
 
-
-
+        
 class TitleSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField(read_only=True)
     genre = serializers.SlugRelatedField(many=True,
                                          slug_field='slug',
                                          queryset=Genre.objects.all())
     category = serializers.SlugRelatedField(slug_field='slug',
-                                            queryset=Category.objects.all())
+                                            queryset=Category.objects.all())                          
+    # category = CategorySerializer(many=True)
 
     def get_rating(self, obj):
         value = Review.objects.filter(
@@ -74,16 +73,17 @@ class TitleSerializer(serializers.ModelSerializer):
         model = Title
         fields = ('id', 'name', 'year', 'description', 'rating', 'genre',
                   'category')
-        
-""""
-class TitleSerializerChange(serializers.ModelSerializer):
-    genre = serializers.SlugRelatedField(many=True,
-                                         slug_field='slug',
-                                         queryset=Genre.objects.all())
-    category = serializers.SlugRelatedField(slug_field='slug',
-                                            queryset=Category.objects.all())
 
+    
+class TitleGetSerializer(serializers.ModelSerializer):
+    # genre = serializers.SlugRelatedField(many=True,
+    #                                      slug_field='slug',
+    #                                      queryset=Genre.objects.all())
+    # category = serializers.SlugRelatedField(slug_field='slug',
+    #                                         queryset=Category.objects.all())                          
+    category = CategorySerializer(many=False)
+    genre = GenreSerializer(many=True)
     class Meta:
         model = Title
-        fields = ('name', 'year', 'description', 'genre', 'category')
-"""
+        fields = ('id', 'name', 'year', 'description', 'genre',
+                  'category')
