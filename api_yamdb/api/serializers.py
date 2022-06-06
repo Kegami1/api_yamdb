@@ -1,3 +1,5 @@
+from django.db.models import Avg
+from os import set_inheritable
 from xml.dom import ValidationErr
 from rest_framework import serializers
 
@@ -53,6 +55,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
         
 class TitleSerializer(serializers.ModelSerializer):
+    rating = serializers.SerializerMethodField(read_only=True)
     genre = serializers.SlugRelatedField(many=True,
                                          slug_field='slug',
                                          queryset=Genre.objects.all())
@@ -60,9 +63,15 @@ class TitleSerializer(serializers.ModelSerializer):
                                             queryset=Category.objects.all())                          
     # category = CategorySerializer(many=True)
 
+    def get_rating(self, obj):
+        value = Review.objects.filter(
+            title=obj.id
+        ).aggregate(rating=Avg('score'))
+        return value['rating']
+
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'description', 'genre',
+        fields = ('id', 'name', 'year', 'description', 'rating', 'genre',
                   'category')
 
     
