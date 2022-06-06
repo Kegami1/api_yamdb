@@ -17,7 +17,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    role = serializers.ReadOnlyField(default='user')
+    role = serializers.ReadOnlyField()
 
     class Meta:
         model = User
