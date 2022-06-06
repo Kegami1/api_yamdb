@@ -1,4 +1,6 @@
+from os import set_inheritable
 from xml.dom import ValidationErr
+from attr import field
 from rest_framework import serializers
 
 from reviews.models import Review, Comment, Category, Title, Genre
@@ -51,17 +53,29 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = ('name', 'slug')
 
-        
+
+
 class TitleSerializer(serializers.ModelSerializer):
     genre = serializers.SlugRelatedField(many=True,
                                          slug_field='slug',
                                          queryset=Genre.objects.all())
     category = serializers.SlugRelatedField(slug_field='slug',
-                                            queryset=Category.objects.all())                          
+                                            queryset=Category.objects.all())
 
     class Meta:
         model = Title
         fields = ('id', 'name', 'year', 'description', 'genre',
                   'category')
+        
+""""
+class TitleSerializerChange(serializers.ModelSerializer):
+    genre = serializers.SlugRelatedField(many=True,
+                                         slug_field='slug',
+                                         queryset=Genre.objects.all())
+    category = serializers.SlugRelatedField(slug_field='slug',
+                                            queryset=Category.objects.all())
 
-
+    class Meta:
+        model = Title
+        fields = ('name', 'year', 'description', 'genre', 'category')
+"""
