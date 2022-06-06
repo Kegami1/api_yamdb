@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from os import set_inheritable
 from xml.dom import ValidationErr
 from attr import field
@@ -56,15 +57,22 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleSerializer(serializers.ModelSerializer):
+    rating = serializers.SerializerMethodField(read_only=True)
     genre = serializers.SlugRelatedField(many=True,
                                          slug_field='slug',
                                          queryset=Genre.objects.all())
     category = serializers.SlugRelatedField(slug_field='slug',
                                             queryset=Category.objects.all())
 
+    def get_rating(self, obj):
+        value = Review.objects.filter(
+            title=obj.id
+        ).aggregate(rating=Avg('score'))
+        return value['rating']
+
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'description', 'genre',
+        fields = ('id', 'name', 'year', 'description', 'rating', 'genre',
                   'category')
         
 """"
