@@ -37,7 +37,7 @@ class Title(models.Model):
         #on_delete=models.SET_NULL,
         related_name='title',
         through='GenreTitle',
-        null=True
+        # null=True
     )
     category = models.ForeignKey(
         Category,

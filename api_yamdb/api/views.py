@@ -105,8 +105,9 @@ class GenreViewSet(ListDeleteViewSet):
     search_fields = ('name',)
     lookup_field = 'slug'
 
+# class TitleViewSet(ListCreateDestroyUpdateViewset):
+class TitleViewSet(viewsets.ModelViewSet):
 
-class TitleViewSet(ListCreateDestroyUpdateViewset):
     queryset = Title.objects.all()
     permission_classes = (MeAdmin,)
     serializer_class = TitleSerializer
