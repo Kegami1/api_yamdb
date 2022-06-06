@@ -58,7 +58,22 @@ class TitleSerializer(serializers.ModelSerializer):
                                          queryset=Genre.objects.all())
     category = serializers.SlugRelatedField(slug_field='slug',
                                             queryset=Category.objects.all())                          
+    # category = CategorySerializer(many=True)
 
+    class Meta:
+        model = Title
+        fields = ('id', 'name', 'year', 'description', 'genre',
+                  'category')
+
+    
+class TitleGetSerializer(serializers.ModelSerializer):
+    # genre = serializers.SlugRelatedField(many=True,
+    #                                      slug_field='slug',
+    #                                      queryset=Genre.objects.all())
+    # category = serializers.SlugRelatedField(slug_field='slug',
+    #                                         queryset=Category.objects.all())                          
+    category = CategorySerializer(many=False)
+    genre = GenreSerializer(many=True)
     class Meta:
         model = Title
         fields = ('id', 'name', 'year', 'description', 'genre',
