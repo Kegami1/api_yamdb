@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models import Avg
 from os import set_inheritable
 from xml.dom import ValidationErr
@@ -53,7 +54,7 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = ('name', 'slug')
 
-        
+
 class TitleSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField(read_only=True)
     genre = serializers.SlugRelatedField(many=True,
@@ -61,13 +62,19 @@ class TitleSerializer(serializers.ModelSerializer):
                                          queryset=Genre.objects.all())
     category = serializers.SlugRelatedField(slug_field='slug',
                                             queryset=Category.objects.all())                          
-    # category = CategorySerializer(many=True)
+    year = serializers.IntegerField()
 
     def get_rating(self, obj):
         value = Review.objects.filter(
             title=obj.id
         ).aggregate(rating=Avg('score'))
         return value['rating']
+
+    def validate_year(self, value):
+        if value >= datetime.now().year:
+            raise serializers.ValidationError('Нельзя добавить произведение которое ещё не вышло')
+        return value
+
 
     class Meta:
         model = Title
@@ -87,3 +94,4 @@ class TitleGetSerializer(serializers.ModelSerializer):
         model = Title
         fields = ('id', 'name', 'year', 'description', 'genre',
                   'category')
+
