@@ -25,12 +25,12 @@ class AuthorAdminModerator(BasePermission):
             return True
         elif (
                 request.user.is_authenticated
-                and request.user.is_admin
+                and request.user.role == 'admin'
         ):
             return True
         elif (
                 request.user.is_authenticated
-                and request.user.is_moderator
+                and request.user.role == 'moderator'
         ):
             return True
 
