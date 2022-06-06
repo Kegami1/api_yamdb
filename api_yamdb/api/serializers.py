@@ -1,3 +1,4 @@
+from xml.dom import ValidationErr
 from rest_framework import serializers
 
 from reviews.models import Review, Comment, Category, Title, Genre
@@ -52,8 +53,13 @@ class GenreSerializer(serializers.ModelSerializer):
 
         
 class TitleSerializer(serializers.ModelSerializer):
-  
-    class Meta: 
-        model = Title
-        fields = ('name', 'year', 'description', 'genre', 'category')
+    genre = serializers.SlugRelatedField(many=True,
+                                         slug_field='slug',
+                                         queryset=Genre.objects.all())
+    category = serializers.SlugRelatedField(slug_field='slug',
+                                            queryset=Category.objects.all())                          
 
+    class Meta:
+        model = Title
+        fields = ('id', 'name', 'year', 'description', 'genre',
+                  'category')

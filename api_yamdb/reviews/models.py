@@ -31,12 +31,15 @@ class Title(models.Model):
     description = models.TextField(
         blank=True,
     )
-    genre = models.ForeignKey(
+    # achievements = models.ManyToManyField(Achievement, through='AchievementCat')
+
+    genre = models.ManyToManyField(
         Genre,
-        on_delete=models.SET_NULL,
-        related_name='title',
-        blank=True,
-        null=True
+        # on_delete=models.SET_NULL,
+        # related_name='title',
+        # blank=True,
+        # null=True,
+        through='Genre_Title'
     )
     category = models.ForeignKey(
         Category,
@@ -120,3 +123,10 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text[:15]
+
+
+class Genre_Title(models.Model):
+    genre = models.ForeignKey(
+        Genre, on_delete=models.CASCADE, related_name='genre')
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE, related_name='title')

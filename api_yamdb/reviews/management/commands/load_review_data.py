@@ -1,7 +1,7 @@
 from csv import DictReader
 from django.core.management import BaseCommand
 
-from reviews.models import Category, Genre, Title, Review, Comment, User
+from reviews.models import Category, Genre, Genre_Title, Title, Review, Comment, User
 from django.shortcuts import get_object_or_404
 
 
@@ -46,19 +46,28 @@ class Command(BaseCommand):
 
         check_not_empty_base(Title)
         for row in DictReader(open('static/data/titles.csv')):
-            for row_genre_title in DictReader(
-                open('static/data/genre_title.csv')
-            ):
-                if row_genre_title['title_id'] == row['id']:
-                    genre_id = row_genre_title['genre_id']
+            # for row_genre_title in DictReader(
+            #     open('static/data/genre_title.csv')
+            # ):
+            #     if row_genre_title['title_id'] == row['id']:
+            #         genre_id = row_genre_title['genre_id']
             title = Title(
                 id=row['id'],
                 name=row['name'],
                 year=row['year'],
                 category=get_object_or_404(Category, id=row['category']),
-                genre=get_object_or_404(Genre, id=genre_id)
+                # genre=get_object_or_404(Genre, id=genre_id)
             )
             title.save()
+
+        check_not_empty_base(Genre_Title)
+        for row in DictReader(open('static/data/genre_title.csv')):
+            genre_title = Genre_Title(
+                id=row['id'],
+                title_id=row['title_id'],
+                genre_id=row['genre_id'],
+            )
+            genre_title.save()
 
         check_not_empty_base(Review)
         for row in DictReader(open('static/data/review.csv')):
