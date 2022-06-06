@@ -31,12 +31,18 @@ class Title(models.Model):
     description = models.TextField(
         blank=True,
     )
-    genre = models.ManyToManyField(Genre)
+
+    genre = models.ManyToManyField(
+        Genre,
+        #on_delete=models.SET_NULL,
+        related_name='title',
+        through='GenreTitle',
+        null=True
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         related_name='title',
-        blank=True,
         null=True
     )
 
@@ -114,3 +120,10 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text[:15]
+
+
+class GenreTitle(models.Model):
+    genre = models.ForeignKey(
+        Genre, on_delete=models.CASCADE, related_name='genre')
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE, related_name='title')

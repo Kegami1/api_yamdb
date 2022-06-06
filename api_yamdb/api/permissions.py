@@ -11,10 +11,12 @@ class ReadOnly(BasePermission):
 
 class MeAdmin(BasePermission):
     def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return (request.user.role == 'admin' or request.user.is_superuser)
+        if request.method in SAFE_METHODS:
+            return True
+        elif request.user.is_authenticated:
+            return (request.user.is_superuser or request.user.role == 'admin')
 
-          
+
 class AuthorAdminModerator(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
@@ -25,12 +27,11 @@ class AuthorAdminModerator(BasePermission):
             return True
         elif (
                 request.user.is_authenticated
-                and request.user.is_admin
+                and request.user.role == 'admin'
         ):
             return True
         elif (
                 request.user.is_authenticated
-                and request.user.is_moderator
+                and request.user.role == 'moderator'
         ):
             return True
-
