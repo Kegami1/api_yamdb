@@ -112,6 +112,7 @@ class TitleViewSet(ListCreateDestroyUpdateViewset):
     serializer_class = TitleSerializer
     filter_backends = (SlugFilterBackend,)
     search_fields = ('id',)
+    lookup_field = 'id'
 
 
     def get_serializer_class(self):
