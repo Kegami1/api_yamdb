@@ -36,7 +36,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           AuthorAdminModerator)
     serializer_class = ReviewSerializer
-    # permission_classes = (AllowAny,)
 
     def get_queryset(self):
         title = get_object_or_404(
@@ -61,7 +60,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           AuthorAdminModerator)
     serializer_class = CommentSerializer
-    # permission_classes = (AllowAny,)
 
     def get_queryset(self):
         review = get_object_or_404(
@@ -96,7 +94,6 @@ class CategoriesViewSet(ListDeleteViewSet):
 
 class GenreViewSet(ListDeleteViewSet):
     queryset = Genre.objects.all()
-    # permission_classes = (MeAdmin | ReadOnly,)
     permission_classes = (MeAdmin,)
 
     serializer_class = GenreSerializer
