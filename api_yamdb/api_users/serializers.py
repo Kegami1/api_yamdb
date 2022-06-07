@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from users.models import User
+from users.models import User, UserRole
 
 
 class UserAdminSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    role = serializers.ReadOnlyField(default='user')
+    role = serializers.ReadOnlyField(default=UserRole.USER)
 
     class Meta:
         model = User
