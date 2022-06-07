@@ -57,3 +57,21 @@ class User(AbstractUser):
         default=UserRole.USER,
     )
     bio = models.TextField(blank=True, null=True)
+
+    @property
+    def is_admin(self):
+        if self.role == UserRole.ADMIN:
+            return True
+        return False
+
+    @property
+    def is_moderator(self):
+        if self.role == UserRole.MODERATOR:
+            return True
+        return False
+
+    @property
+    def is_user(self):
+        if self.role == UserRole.USER:
+            return True
+        return False

@@ -1,5 +1,4 @@
 from rest_framework import permissions
-from users.models import UserRole
 
 
 class AdminOnly(permissions.BasePermission):
@@ -11,7 +10,7 @@ class AdminOnly(permissions.BasePermission):
         if request.user.is_authenticated:
             return (
                 request.user.is_superuser
-                or request.user.role == UserRole.ADMIN
+                or request.user.is_admin
 
             )
 
