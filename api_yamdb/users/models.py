@@ -35,6 +35,6 @@ class User(AbstractUser):
         choices=USERS_ROLE_CHOICES,
         blank=False,
         null=False,
-        default='USER',
+        default='user',
     )
     bio = models.TextField(blank=True, null=True)
