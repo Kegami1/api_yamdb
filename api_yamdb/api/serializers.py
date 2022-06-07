@@ -74,7 +74,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class TitleGetSerializer(serializers.ModelSerializer):
-    rating = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.SerializerMethodField()
     category = CategorySerializer(many=False)
     genre = GenreSerializer(many=True)
 
@@ -88,3 +88,4 @@ class TitleGetSerializer(serializers.ModelSerializer):
         model = Title
         fields = ('id', 'name', 'year', 'description', 'genre', 'rating',
                   'category')
+        read_only_fields = ('__all__',)

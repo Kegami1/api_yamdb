@@ -1,4 +1,8 @@
-from django.core.validators import MaxValueValidator, MinValueValidator
+from datetime import datetime
+from django.core.exceptions import ValidationError
+from django.core.validators import (MaxValueValidator,
+                                    MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 
 from users.models import User
@@ -8,7 +12,13 @@ class Category(models.Model):
     name = models.TextField(max_length=256)
     slug = models.CharField(
         max_length=50,
-        unique=True
+        unique=True,
+        validators=[
+            RegexValidator(
+                regex=r'^[-a-zA-Z0-9_]+$',
+                message='Недопустимые символы'
+            )
+        ]
     )
 
     def __str__(self):
@@ -16,7 +26,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.TextField(max_length=256)
     slug = models.CharField(
         max_length=50,
         unique=True)
@@ -31,7 +41,6 @@ class Title(models.Model):
     description = models.TextField(
         blank=True,
     )
-
     genre = models.ManyToManyField(
         Genre,
         related_name='title',
@@ -44,6 +53,12 @@ class Title(models.Model):
         related_name='title',
         null=True
     )
+
+    def save(self, *args, **kwargs):
+        if self.year > datetime.now().year:
+            raise ValidationError(
+                'Нельзя добавить произведение которое ещё не вышло')
+        super(Title, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
