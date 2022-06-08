@@ -7,7 +7,10 @@ from api.permissions import AuthorAdminModerator, MeAdmin
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleGetSerializer, TitleSerializer)
+from api.filters import TitleFilter
+
 from reviews.models import Category, Genre, Review, Title
+from django.db.models import Avg
 
 
 class SlugFilterBackend(filters.BaseFilterBackend):
@@ -74,7 +77,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         review = get_object_or_404(
             Review,
             id=self.kwargs.get('review_id'),
-            title=self.kwargs.get('title_id')
+            title_id=self.kwargs.get('title_id')
         )
         serializer.save(
             author=self.request.user,
@@ -82,34 +85,29 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
 
-class CategoriesViewSet(ListDeleteViewSet):
+class TitleFieldsViewSet(ListDeleteViewSet):
+    permission_classes = (MeAdmin,)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filterset_fields = ('name', 'slug')
+    search_fields = ('name',)
+    lookup_field = 'slug'
+
+
+class CategoriesViewSet(TitleFieldsViewSet):
     queryset = Category.objects.all()
-    permission_classes = (MeAdmin,)
     serializer_class = CategorySerializer
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    filterset_fields = ('name', 'slug')
-    search_fields = ('name',)
-    lookup_field = 'slug'
 
 
-class GenreViewSet(ListDeleteViewSet):
+class GenreViewSet(TitleFieldsViewSet):
     queryset = Genre.objects.all()
-    permission_classes = (MeAdmin,)
-
     serializer_class = GenreSerializer
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    filterset_fields = ('name', 'slug')
-    search_fields = ('name',)
-    lookup_field = 'slug'
 
 
 class TitleViewSet(ListCreateDestroyUpdateViewset):
-    queryset = Title.objects.all()
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
     permission_classes = (MeAdmin,)
-    serializer_class = TitleSerializer
-    filter_backends = (SlugFilterBackend,)
-    search_fields = ('id',)
-    lookup_field = 'id'
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
