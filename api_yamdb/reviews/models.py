@@ -89,7 +89,6 @@ class Review(models.Model):
                     MaxValueValidator(10)),
         blank=False,
         null=False,
-        default='10',
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,

@@ -10,6 +10,7 @@ from api.serializers import (CategorySerializer, CommentSerializer,
 from api.filters import TitleFilter
 
 from reviews.models import Category, Genre, Review, Title
+from django.db.models import Avg
 
 
 class SlugFilterBackend(filters.BaseFilterBackend):
@@ -76,7 +77,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         review = get_object_or_404(
             Review,
             id=self.kwargs.get('review_id'),
-            title=self.kwargs.get('title_id')
+            title_id=self.kwargs.get('title_id')
         )
         serializer.save(
             author=self.request.user,
@@ -103,12 +104,10 @@ class GenreViewSet(TitleFieldsViewSet):
 
 
 class TitleViewSet(ListCreateDestroyUpdateViewset):
-    queryset = Title.objects.all()
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
     permission_classes = (MeAdmin,)
-    serializer_class = TitleSerializer
-    filter_backends = (SlugFilterBackend,)
-    search_fields = ('id',)
-    lookup_field = 'id'
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
