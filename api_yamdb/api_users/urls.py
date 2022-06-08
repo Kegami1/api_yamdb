@@ -3,11 +3,10 @@ from rest_framework import routers
 
 from api_users.views import UserApiViewSet, get_token, signup
 
-
 app_name = 'api_users'
 router = routers.DefaultRouter()
 router.register(
-    r'users',
+    'users',
     UserApiViewSet,
     basename='user'
 )
