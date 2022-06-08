@@ -1,8 +1,6 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.contrib.auth.validators import UnicodeUsernameValidator
-
-username_validator = UnicodeUsernameValidator()
+from django.db import models
 
 
 class UserRole:
@@ -30,7 +28,7 @@ class User(AbstractUser):
     username = models.CharField(
         verbose_name='Имя пользователя',
         max_length=150,
-        validators=[username_validator],
+        validators=[UnicodeUsernameValidator()],
         unique=True,
     )
     email = models.EmailField(
@@ -66,12 +64,8 @@ class User(AbstractUser):
 
     @property
     def is_moderator(self):
-        if self.role == UserRole.MODERATOR:
-            return True
-        return False
+        return self.role == UserRole.MODERATOR
 
     @property
     def is_user(self):
-        if self.role == UserRole.USER:
-            return True
-        return False
+        return self.role == UserRole.USER

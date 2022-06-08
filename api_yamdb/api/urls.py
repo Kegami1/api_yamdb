@@ -4,7 +4,6 @@ from rest_framework import routers
 from api.views import (CategoriesViewSet, CommentViewSet, GenreViewSet,
                        ReviewViewSet, TitleViewSet)
 
-
 router = routers.DefaultRouter()
 
 router.register('categories', CategoriesViewSet, basename='categories')
