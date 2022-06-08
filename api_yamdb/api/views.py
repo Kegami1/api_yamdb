@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions, viewsets
@@ -8,31 +9,7 @@ from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleGetSerializer, TitleSerializer)
 from api.filters import TitleFilter
-
 from reviews.models import Category, Genre, Review, Title
-from django.db.models import Avg
-
-
-class SlugFilterBackend(filters.BaseFilterBackend):
-    def filter_queryset(self, request, queryset, view):
-        if request.query_params:
-            if 'genre' in request.query_params.keys():
-                slug = request.query_params['genre']
-                titles = Title.objects.filter(genre__slug=slug)
-                return titles
-            if 'category' in request.query_params.keys():
-                slug = request.query_params['category']
-                titles = Title.objects.filter(category__slug=slug)
-                return titles
-            if 'year' in request.query_params.keys():
-                year = request.query_params['year']
-                titles = Title.objects.filter(year=year)
-                return titles
-            if 'name' in request.query_params.keys():
-                name = request.query_params['name']
-                titles = Title.objects.filter(name__contains=name)
-                return titles
-        return Title.objects.all()
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
