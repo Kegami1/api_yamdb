@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api_users.constants import RESERVED_KEYWORD_ME
-from api_users.permissions import AdminOnly
+from api_users.permissions import AdminOnly, UserOwner
 from api_users.serializers import (UserAdminSerializer, UserGetTokenSerializer,
                                    UserSerializer, UserSignupSerializer)
 from users.models import User
@@ -21,7 +21,13 @@ def signup(request):
     serializer.is_valid(raise_exception=True)
     username = serializer.validated_data['username']
     email = serializer.validated_data['email']
-    User.objects.get_or_create(username=username, email=email)
+    try:
+        User.objects.get_or_create(username=username, email=email)
+    except ValueError:
+        return Response(
+            'Найти(создать) пользователя не получилось',
+            status=status.HTTP_400_BAD_REQUEST
+        )
     user = get_object_or_404(User, username=username)
     confirmation_code = default_token_generator.make_token(user)
     send_mail(
@@ -64,7 +70,8 @@ class UserApiViewSet(viewsets.ModelViewSet):
     @action(
         methods=['get', 'patch'],
         detail=False,
-        url_path=RESERVED_KEYWORD_ME
+        url_path=RESERVED_KEYWORD_ME,
+        permission_classes=[UserOwner]
     )
     def user_me(self, request):
         user = get_object_or_404(User, username=self.request.user)

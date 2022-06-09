@@ -1,7 +1,5 @@
 from rest_framework import permissions
 
-from api_users.constants import RESERVED_KEYWORD_ME
-
 
 class AdminOnly(permissions.BasePermission):
     """
@@ -10,10 +8,20 @@ class AdminOnly(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.user.is_authenticated:
-            path = '/' + RESERVED_KEYWORD_ME + '/'
-            if path in request.path:
-                return True
             return (
                 request.user.is_superuser
                 or request.user.is_admin
             )
+
+
+class UserOwner(permissions.BasePermission):
+    """
+    Разрешение пользователю работы со своим аккаунтом.
+    """
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_authenticated:
+            return obj.username == request.user
