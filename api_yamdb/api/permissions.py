@@ -6,7 +6,7 @@ class ReadOnly(BasePermission):
         return request.method in SAFE_METHODS
 
 
-class MeAdmin(BasePermission):
+class SuperuserAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
@@ -15,7 +15,7 @@ class MeAdmin(BasePermission):
                     or request.user.is_admin)
 
 
-class AuthorAdminModerator(BasePermission):
+class AuthorAdminModeratorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
@@ -23,13 +23,5 @@ class AuthorAdminModerator(BasePermission):
             return True
         if request.user.is_superuser:
             return True
-        if (
-                request.user.is_authenticated
-                and request.user.is_admin
-        ):
-            return True
-        if (
-                request.user.is_authenticated
-                and request.user.is_moderator
-        ):
-            return True
+        return request.user.is_authenticated and (
+            request.user.is_admin or request.user.is_moderator)

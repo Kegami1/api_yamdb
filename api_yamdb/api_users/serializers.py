@@ -56,7 +56,7 @@ class UserSignupSerializer(serializers.Serializer):
     )
 
     def validate(self, data):
-        if 'username' and 'email' in data:
+        if 'username' in data and 'email' in data:
             if User.objects.filter(username=data['username']).exists():
                 email = User.objects.get(username=data['username']).email
                 if email != data['email']:

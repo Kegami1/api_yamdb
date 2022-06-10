@@ -4,7 +4,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions, viewsets
 
 from api.mixins import ListCreateDestroyUpdateViewset, ListDeleteViewSet
-from api.permissions import AuthorAdminModerator, MeAdmin
+from api.permissions import (AuthorAdminModeratorOrReadOnly,
+                             SuperuserAdminOrReadOnly)
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleGetSerializer, TitleSerializer)
@@ -14,7 +15,7 @@ from reviews.models import Category, Genre, Review, Title
 
 class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          AuthorAdminModerator)
+                          AuthorAdminModeratorOrReadOnly)
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
@@ -38,7 +39,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          AuthorAdminModerator)
+                          AuthorAdminModeratorOrReadOnly)
     serializer_class = CommentSerializer
 
     def get_queryset(self):
@@ -63,7 +64,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 class TitleFieldsViewSet(ListDeleteViewSet):
-    permission_classes = (MeAdmin,)
+    permission_classes = (SuperuserAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_fields = ('name', 'slug')
     search_fields = ('name',)
@@ -82,7 +83,7 @@ class GenreViewSet(TitleFieldsViewSet):
 
 class TitleViewSet(ListCreateDestroyUpdateViewset):
     queryset = Title.objects.annotate(rating=Avg('reviews__score'))
-    permission_classes = (MeAdmin,)
+    permission_classes = (SuperuserAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
 
